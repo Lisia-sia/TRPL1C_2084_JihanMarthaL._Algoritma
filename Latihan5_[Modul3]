@@ -1,0 +1,166 @@
+import 'dart:io';
+import 'dart:math'; // Diperlukan untuk generate angka acak
+
+void main() {
+  // Generate random data (5000 integers untuk menunjukkan perbedaan waktu yang lebih jelas)
+  List<int> data = generateRandomData(1000);
+  List<int> originalData = List.from(data); // Menyimpan salinan sebelum sorting
+
+  print("\nALGORITMA SORTING");
+  print("1. Insertion");
+  print("2. Selection");
+  print("3. Bubble");
+  print("4. Shell");
+  print("5. Quick");
+  print("6. Merge");
+  stdout.write("Pilihan : ");
+  int choice = int.parse(stdin.readLineSync()!);
+
+  print("\n1. Ascending");
+  print("2. Descending");
+  stdout.write("Pilihan : ");
+  int order = int.parse(stdin.readLineSync()!);
+
+  bool isAscending = (order == 1);
+  DateTime startTime = DateTime.now();
+  Duration elapsedTime;
+
+  print("\nData sebelum sorting:");
+  print(originalData); // Menampilkan data asli sebelum sorting
+  print(""); // Spasi agar tampilan tidak mepet
+
+  switch (choice) {
+    case 1:
+      insertionSort(data, isAscending);
+      break;
+    case 2:
+      selectionSort(data, isAscending);
+      break;
+    case 3:
+      bubbleSort(data, isAscending);
+      break;
+    case 4:
+      shellSort(data, isAscending);
+      break;
+    case 5:
+      quickSort(data, 0, data.length - 1, isAscending);
+      break;
+    case 6:
+      mergeSort(data, 0, data.length - 1, isAscending);
+      break;
+    default:
+      print("Pilihan tidak valid");
+      return;
+  }
+
+  elapsedTime = DateTime.now().difference(startTime);
+
+  print("\nData setelah sorting:");
+  print(data); // Menampilkan hasil sorting
+  print(""); // Spasi agar tidak terlalu rapat
+  
+  // Mengubah ke mikrodetik untuk mendapatkan pengukuran yang lebih presisi
+  print("Waktu eksekusi: ${elapsedTime.inMilliseconds} ms\n");
+}
+
+List<int> generateRandomData(int size) {
+  Random random = Random();
+  return List<int>.generate(size, (_) => random.nextInt(1000)); // 0 - 999
+}
+
+void insertionSort(List<int> arr, bool asc) {
+  for (int i = 1; i < arr.length; i++) {
+    int key = arr[i], j = i - 1;
+    while (j >= 0 && (asc ? arr[j] > key : arr[j] < key)) arr[j + 1] = arr[j--];
+    arr[j + 1] = key;
+  }
+}
+
+void selectionSort(List<int> arr, bool asc) {
+  for (int i = 0; i < arr.length - 1; i++) {
+    int idx = i;
+    for (int j = i + 1; j < arr.length; j++) {
+      if (asc ? arr[j] < arr[idx] : arr[j] > arr[idx]) idx = j;
+    }
+    int temp = arr[i];
+    arr[i] = arr[idx];
+    arr[idx] = temp;
+  }
+}
+
+void bubbleSort(List<int> arr, bool asc) {
+  for (int i = 0; i < arr.length - 1; i++) {
+    for (int j = 0; j < arr.length - i - 1; j++) {
+      if (asc ? arr[j] > arr[j + 1] : arr[j] < arr[j + 1]) {
+        int temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+}
+
+void shellSort(List<int> arr, bool asc) {
+  for (int gap = arr.length ~/ 2; gap > 0; gap ~/= 2) {
+    for (int i = gap; i < arr.length; i++) {
+      int temp = arr[i], j;
+      for (j = i; j >= gap && (asc ? arr[j - gap] > temp : arr[j - gap] < temp); j -= gap) {
+        arr[j] = arr[j - gap];
+      }
+      arr[j] = temp;
+    }
+  }
+}
+
+void quickSort(List<int> arr, int low, int high, bool asc) {
+  if (low < high) {
+    int p = partition(arr, low, high, asc);
+    quickSort(arr, low, p, asc);
+    quickSort(arr, p + 1, high, asc);
+  }
+}
+
+int partition(List<int> arr, int low, int high, bool asc) {
+  int pivot = arr[low], i = low, j = high;
+  while (i <= j) {
+    if (asc) {
+      while (arr[j] > pivot) j--;
+      while (arr[i] < pivot) i++;
+    } else {
+      while (arr[j] < pivot) j--;
+      while (arr[i] > pivot) i++;
+    }
+    if (i < j) {
+      int temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
+      i++;
+      j--;
+    } else {
+      return j;
+    }
+  }
+  return j;
+}
+
+void mergeSort(List<int> arr, int left, int right, bool asc) {
+  if (left < right) {
+    int mid = (left + right) ~/ 2;
+    mergeSort(arr, left, mid, asc);
+    mergeSort(arr, mid + 1, right, asc);
+    merge(arr, left, mid, right, asc);
+  }
+}
+
+void merge(List<int> arr, int left, int mid, int right, bool asc) {
+  List<int> temp = List.of(arr);
+  int i = left, j = mid + 1, k = left;
+
+  while (i <= mid && j <= right) {
+    if (asc ? temp[i] <= temp[j] : temp[i] >= temp[j]) arr[k++] = temp[i++];
+    else arr[k++] = temp[j++];
+  }
+
+  while (i <= mid) arr[k++] = temp[i++];
+  while (j <= right) arr[k++] = temp[j++]; // Menambahkan bagian yang hilang
+}
