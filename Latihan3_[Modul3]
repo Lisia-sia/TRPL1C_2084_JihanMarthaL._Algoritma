@@ -1,0 +1,75 @@
+// Latihan 3: Implementasi Class Mahasiswa dan Quick Sort
+class Mahasiswa implements Comparable<Mahasiswa> {
+  String nrp;
+  String nama;
+
+  Mahasiswa(this.nrp, this.nama);
+
+  @override
+  String toString() {
+    return '$nrp - $nama';
+  }
+
+  @override
+  int compareTo(Mahasiswa other) {
+    // Implementasi perbandingan berdasarkan NRP
+    return this.nrp.compareTo(other.nrp);
+  }
+}
+
+class LatihanQuickSort {
+  static int partition<T extends Comparable<T>>(List<T> arr, int p, int r) {
+    T pivot = arr[(p + r) ~/ 2]; // Ambil pivot dari tengah
+    int i = p, j = r;
+
+    while (i <= j) {
+      while (arr[i].compareTo(pivot) < 0) i++;
+      while (arr[j].compareTo(pivot) > 0) j--;
+
+      if (i <= j) {
+        T temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+        i++;
+        j--;
+      }
+    }
+    return i - 1;
+  }
+
+  static void quickSort<T extends Comparable<T>>(List<T> arr, int p, int r) {
+    if (p < r) {
+      int q = partition(arr, p, r);
+      quickSort(arr, p, q);
+      quickSort(arr, q + 1, r);
+    }
+  }
+
+  static void tampil<T>(List<T> data) {
+    for (T objek in data) {
+      print('$objek');
+    }
+    print('');
+  }
+}
+
+void main() {
+  List<Mahasiswa> arr8 = [
+    Mahasiswa("02", "Budi"),
+    Mahasiswa("01", "Andi"),
+    Mahasiswa("04", "Udin"),
+    Mahasiswa("03", "Candra")
+  ];
+  
+  print("Data sebelum sorting:");
+  LatihanQuickSort.tampil(arr8);
+
+  // Proses Quick Sort
+  DateTime startTime = DateTime.now();
+  LatihanQuickSort.quickSort(arr8, 0, arr8.length - 1);
+  Duration elapsedTime = DateTime.now().difference(startTime);
+
+  print("\nSetelah Quick Sort:");
+  LatihanQuickSort.tampil(arr8);
+  print("Waktu eksekusi Quick Sort: ${elapsedTime.inMilliseconds} ms\n");
+}
