@@ -1,0 +1,39 @@
+class Mahasiswa implements Comparable<Mahasiswa> {
+  String nrp;
+  String nama;
+
+  Mahasiswa(this.nrp, this.nama);
+
+  @override
+  int compareTo(Mahasiswa other) {
+    return nrp.compareTo(other.nrp);
+  }
+
+  @override
+  String toString() {
+    return 'NRP: $nrp, Nama: $nama';
+  }
+}
+
+// Contoh penggunaan
+void main() {
+  List<Mahasiswa> mahasiswaList = [
+    Mahasiswa("2203", "Budi"),
+    Mahasiswa("2201", "Andi"),
+    Mahasiswa("2204", "Udin"),
+    Mahasiswa("2202", "Candra")
+  ];
+
+  print('Sebelum diurutkan:');
+  for (var mhs in mahasiswaList) {
+    print(mhs);
+  }
+
+  // Mengurutkan berdasarkan NRP (karena Mahasiswa mengimplementasikan Comparable)
+  mahasiswaList.sort();
+
+  print('\nSetelah diurutkan:');
+  for (var mhs in mahasiswaList) {
+    print(mhs);
+  }
+}
