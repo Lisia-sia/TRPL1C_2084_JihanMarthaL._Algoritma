@@ -144,6 +144,20 @@ void main() {
     print('Quick Sort: ${measureTime(quickSort, data, 'Quick', printResult: true)} detik');
     print('Merge Sort: ${measureTime(mergeSort, data, 'Merge', printResult: true)} detik');
 
+    Map<String, double> times = {
+      'Insertion Sort': measureTime(insertionSort, data, 'Insertion', printResult: true),
+      'Selection Sort': measureTime(selectionSort, data, 'Selection', printResult: true),
+      'Bubble Sort': measureTime(bubbleSort, data, 'Bubble', printResult: true),
+      'Shell Sort': measureTime(shellSort, data, 'Shell', printResult: true),
+      'Quick Sort': measureTime(quickSort, data, 'Quick', printResult: true),
+      'Merge Sort': measureTime(mergeSort, data, 'Merge', printResult: true),
+    };
+
+    print('\nRekap Waktu Eksekusi untuk $size data:');
+    times.forEach((key, value) {
+      print('$key: $value detik');
+    });
+
     print('=======================================\n');
   }
 }
